@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hece <hece@student.42kocaeli.com.tr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/24 14:41:48 by hece              #+#    #+#             */
-/*   Updated: 2022/12/24 20:47:29 by hece             ###   ########.tr       */
+/*   Created: 2022/12/24 20:58:05 by hece              #+#    #+#             */
+/*   Updated: 2022/12/24 21:05:38 by hece             ###   ########.tr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 int	ft_strchr(char *str)
 {
@@ -115,29 +115,29 @@ char	*ft_create_buffer(char *buffer, int buff_size, int fd)
 
 char	*get_next_line(int fd)
 {
-	static typeof(char *) buffer;
+	static typeof(char *) buffer[1024];
 	typeof(char *) line;
 	typeof(int) index;
 	index = 0;
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	buffer = ft_create_buffer(buffer, 1, fd);
-	if (!buffer)
+	buffer[fd] = ft_create_buffer(buffer[fd], 1, fd);
+	if (!buffer[fd])
 		return (NULL);
-	while (buffer[index] && buffer[index] != '\n')
+	while (buffer[fd][index] && buffer[fd][index] != '\n')
 		index++;
 	line = (char *)malloc(sizeof(char) * (index + 2));
 	if (!line)
 		return (NULL);
 	index = -1;
-	while (buffer[++index] && buffer[index] != '\n')
-		line[index] = buffer[index];
-	if (buffer[index] == '\n')
+	while (buffer[fd][++index] && buffer[fd][index] != '\n')
+		line[index] = buffer[fd][index];
+	if (buffer[fd][index] == '\n')
 	{
-		line[index] = buffer[index];
+		line[index] = buffer[fd][index];
 		index++;
 	}
 	line[index] = '\0';
-	buffer = ft_new_create_buffer(buffer);
+	buffer[fd] = ft_new_create_buffer(buffer[fd]);
 	return (line);
 }
