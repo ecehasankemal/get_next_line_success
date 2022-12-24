@@ -6,11 +6,12 @@
 /*   By: hece <hece@student.42kocaeli.com.tr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/24 14:41:48 by hece              #+#    #+#             */
-/*   Updated: 2022/12/24 18:09:34 by hece             ###   ########.tr       */
+/*   Updated: 2022/12/24 19:07:38 by hece             ###   ########.tr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#include	<stdio.h>
 
 int	ft_strchr(char *str)
 {
@@ -93,7 +94,6 @@ char	*ft_create_buffer(char *buffer, int buff_size, int fd)
 	temp = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (!temp)
 		return (NULL);
-//	buff_size = read(fd, buffer, BUFFER_SIZE);
 	while ((buff_size != 0 && !ft_strchr(buffer)))
 	{
 		buff_size = read(fd, temp, BUFFER_SIZE);
@@ -120,7 +120,7 @@ char	*get_next_line(int fd)
 	typeof(char *) line;
 	typeof(int) index;
 	index = 0;
-	if (fd <= 0 || BUFFER_SIZE <= 0)
+	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	buffer = ft_create_buffer(buffer, 1, fd);
 	if (!buffer)
@@ -134,8 +134,11 @@ char	*get_next_line(int fd)
 	while (buffer[++index] && buffer[index] != '\n')
 		line[index] = buffer[index];
 	if (buffer[index] == '\n')
+	{
 		line[index] = buffer[index];
-	line[++index] = '\0';
+		index++;
+	}
+	line[index] = '\0';
 	buffer = ft_new_create_buffer(buffer);
 	return (line);
 }
@@ -145,7 +148,7 @@ char	*get_next_line(int fd)
 
 int	main(void)
 {
-	int	fd;
+	//int	fd;
 	int	i;
 
 	i = 0;
@@ -153,7 +156,7 @@ int	main(void)
 	//while (1)
 	//{
 		char *tmp;
-		tmp = get_next_line(1);
+		tmp = get_next_line(0);
 		printf("%s\n", tmp);
 	//	i++;
 	//}
