@@ -6,12 +6,11 @@
 /*   By: hece <hece@student.42kocaeli.com.tr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/24 14:41:48 by hece              #+#    #+#             */
-/*   Updated: 2022/12/24 19:07:38 by hece             ###   ########.tr       */
+/*   Updated: 2022/12/24 19:11:19 by hece             ###   ########.tr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include	<stdio.h>
 
 int	ft_strchr(char *str)
 {
