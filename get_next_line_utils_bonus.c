@@ -6,8 +6,8 @@
 /*   By: hece <hece@student.42kocaeli.com.tr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/24 20:58:52 by hece              #+#    #+#             */
-/*   Updated: 2022/12/24 20:59:05 by hece             ###   ########.tr       */
+/*   Updated: 2022/12/24 22:28:24 by hece             ###   ########.tr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
