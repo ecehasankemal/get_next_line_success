@@ -1,8 +1,16 @@
-#include <stdio.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <string.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hece <hece@student.42kocaeli.com.tr>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/12/24 14:41:48 by hece              #+#    #+#             */
+/*   Updated: 2022/12/24 18:09:34 by hece             ###   ########.tr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "get_next_line.h"
 
 int	ft_strchr(char *str)
 {
@@ -22,74 +30,131 @@ int	ft_strchr(char *str)
 
 char	*ft_strjoin(char *s1, char *s2)
 {
-	typeof(size_t) i;
-	typeof(size_t) j;
+	typeof(t_mystruct) index;
 	typeof(char *) str;
-	i = -1;
-	j = -1;
-	while (s1[++i]);
-	while (s2[++j])
+	index.i = 0;
+	index.j = 0;
 	if (!s1)
 	{
 		s1 = (char *)malloc(sizeof(char));
 		s1[0] = '\0';
 	}
-	str = (char *)malloc(sizeof(char) * (i + j + 1));
-	i = -1;
-	j = -1;
-	if (str == NULL)
+	while (s1[index.i])
+		index.i++;
+	while (s2[index.j])
+		index.j++;
+	str = (char *)malloc(sizeof(char) * (index.i + index.j + 1));
+	index.i = 0;
+	index.j = 0;
+	if (!str)
 		return (NULL);
-	while (s1)
-		str[++i] = s1[i];
-	while (s2[j] != '\0')
-		str[i + j] = s2[++j];
-		j++;
-	str[i + j] = '\0';
+	while (s1[index.i])
+		str[index.i++] = s1[index.i];
+	while (s2[index.j] != '\0')
+		str[(index.i - 1) + index.j] = s2[index.j++];
+	str[index.i + index.j] = '\0';
 	free(s1);
 	return (str);
 }
-char	*ft_new_buffer(char *buffer, int buff_size, int fd)
+
+char	*ft_new_create_buffer(char *buffer)
+{
+	typeof(int) index;
+	typeof(int) jndex;
+	typeof(char *) res;
+	typeof(int) len;
+	index = 0;
+	len = 0;
+	while (buffer[len])
+		len++;
+	while (buffer[index] && buffer[index] != '\n')
+		index++;
+	if (!buffer[index])
+	{
+		free(buffer);
+		return (NULL);
+	}
+	res = (char *)malloc(sizeof(char) * (len - index + 1));
+	if (!res)
+		return (NULL);
+	index++;
+	jndex = 0;
+	while (buffer[index])
+		res[jndex++] = buffer[index++];
+	res[jndex] = '\0';
+	free(buffer);
+	return (res);
+}
+
+char	*ft_create_buffer(char *buffer, int buff_size, int fd)
 {
 	char	*temp;
 
-	buff_size = 1;
-	temp  = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
-	while (buff_size != 0 && ft_strchr(buffer))
+	temp = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	if (!temp)
+		return (NULL);
+//	buff_size = read(fd, buffer, BUFFER_SIZE);
+	while ((buff_size != 0 && !ft_strchr(buffer)))
 	{
-			buff_size = read(fd, temp, BUFFER_SIZE);
-			if (buff_size == -1)
-			{
-				free(buffer);
-				return (NULL);
-			}
-			temp[buff_size] = '\0';
-			buffer = ft_strjoin(buffer, temp);
+		buff_size = read(fd, temp, BUFFER_SIZE);
+		if (buff_size == -1)
+		{
+			free(temp);
+			return (NULL);
+		}
+		temp[buff_size] = '\0';
+		buffer = ft_strjoin(buffer, temp);
 	}
 	free(temp);
+	if (buffer[0] == 0)
+	{
+		free(buffer);
+		return (NULL);
+	}
 	return (buffer);
 }
 
 char	*get_next_line(int fd)
 {
-	static char		*buffer;
-	char			*line;
-	size_t			index = 0;
-	size_t			buff_size = 0;
-
+	static typeof(char *) buffer;
+	typeof(char *) line;
+	typeof(int) index;
 	index = 0;
-	buff_size = 0;
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	if (fd <= 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	buffer = ft_new_buffer(buffer, buff_size, fd);
+	buffer = ft_create_buffer(buffer, 1, fd);
 	if (!buffer)
 		return (NULL);
 	while (buffer[index] && buffer[index] != '\n')
 		index++;
-	line = (char *)malloc(sizeof(char) (index + 2));
-	if (!res)
+	line = (char *)malloc(sizeof(char) * (index + 2));
+	if (!line)
 		return (NULL);
 	index = -1;
 	while (buffer[++index] && buffer[index] != '\n')
 		line[index] = buffer[index];
-	line[index] = '\n';
+	if (buffer[index] == '\n')
+		line[index] = buffer[index];
 	line[++index] = '\0';
+	buffer = ft_new_create_buffer(buffer);
+	return (line);
+}
+
+/*#include	<stdio.h>
+#include	<fcntl.h>
+
+int	main(void)
+{
+	int	fd;
+	int	i;
+
+	i = 0;
+	//fd = open("test.txt", 0);
+	//while (1)
+	//{
+		char *tmp;
+		tmp = get_next_line(1);
+		printf("%s\n", tmp);
+	//	i++;
+	//}
+}*/
